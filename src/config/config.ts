@@ -1,13 +1,29 @@
-// config/config.ts: Sequelize 설정을 위한 파일
+// export type Env = 'development' | 'production' | 'test';
+import { Dialect } from 'sequelize';
 
-export default {
+import dotenv from 'dotenv';
+dotenv.config();
+
+export type Env = 'development'
+
+
+interface DatabaseConfig {
+  username: string;
+  password: string;
+  database: string;
+  host: string;
+  dialect: 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mssql';
+  // 필요한 다른 설정들을 추가할 수 있습니다.
+}
+
+const config: Record<Env, DatabaseConfig> = {
   development: {
-    username: "admin",
-    password: "qwer1234",
-    database: "test-rds",
-    host: "test-rds.caortczun2j4.ap-northeast-2.rds.amazonaws.com",
-    dialect: "mysql",
-    // operatorsAliases: false
-  }
-  // ... 다른 환경 설정 (예: production, test)
+    username: process.env.DB_USERNAME!,
+    password: process.env.DB_PASSWORD!,
+    database: process.env.DB_NAME!,
+    host: process.env.DB_HOST!,
+    dialect: process.env.DB_DIALECT as "mysql",
+  },
 };
+
+export default config;
