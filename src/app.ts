@@ -1,6 +1,9 @@
 import express, { Express, Request, Response, NextFunction } from "express";
+import session from "express-session";
+import passport from "passport";
 import userRoutes from "./routes/user";
 import uploadRoutes from "./routes/upload";
+import authRouter from "./routes/authRouter";
 import sequelize from "./models/index";
 
 // [설명] express 애플리케이션을 초기화합니다.
@@ -21,9 +24,21 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next(); // 다음 미들웨어로 진행합니다.
 });
 
+app.use(
+  session({
+    secret: "your_secret_key",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // [설명] 사용자 관련 라우트를 /users 경로에 연결합니다.
 app.use("/users", userRoutes);
 app.use("/upload", uploadRoutes);
+app.use("/auth", authRouter);
 
 //[설명] Sequelize를 사용하여 모델과 데이터베이스를 동기화합니다.
 sequelize
