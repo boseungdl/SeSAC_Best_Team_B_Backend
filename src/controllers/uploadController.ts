@@ -3,6 +3,8 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import exifParser from "exif-parser";
+import Image from "../models/tables/image";  // 모델 import 위치는 실제 경로에 따라 변경되어야 합니다.
+import Record from "../models/tables/record";  // 모델 import 위치는 실제 경로에 따라 변경되어야 합니다.
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -15,8 +17,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).array("images");
 
-export const uploadImages = (req: Request, res: Response) => {
-  upload(req, res, (err) => {
+export const uploadImages = async (req: Request, res: Response) => {
+  upload(req, res, async (err) => {
     if (err) {
       return res.status(500).json({
         success: false,
@@ -36,14 +38,44 @@ export const uploadImages = (req: Request, res: Response) => {
       const parser = exifParser.create(buffer);
       const result = parser.parse();
 
-      console.log("result", result, "end"); // Exif data
+      // console.log("result", result, "end"); // Exif data
       return file.path;
-    });
+    })
 
-    res.status(200).json({
-      success: true,
-      message: "Uploaded successfully",
-      filepaths: filepaths,
-    });
+    try {
+      console.log(req.body.text)
+      // 여기서 기록(Record)을 먼저 저장합니다.
+      const record = await Record.create({
+        recordValue: req.body.text
+      });
+      console.log(record)
+      // 이제 이미지 데이터를 저장합니다.
+      for (let file of filepaths) {
+        const buffer = fs.readFileSync(file);
+        const parser = exifParser.create(buffer);
+        const result = parser.parse();
+        console.log('result.tags.CreateDate', result.tags.CreateDate)
+        await Image.create({
+          GPSLongitude: result.tags.GPSLongitude,
+          GPSLatitude: result.tags.GPSLatitude,
+          CreateDate: new Date(result.tags.CreateDate*1000),
+          recordId: record.recordId // 기록의 ID를 FK로 사용합니다.
+        });
+      }
+      console.log(1)
+      res.status(200).json({
+        success: true,
+        message: "Uploaded and saved successfully",
+        filepaths: filepaths,
+      });
+
+    } catch (error : any ) {
+      console.log(2)
+      res.status(500).json({
+        success: false,
+        message: "DB insert failed",
+        error: error.message,
+      });
+    }
   });
 };
