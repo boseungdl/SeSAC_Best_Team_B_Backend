@@ -5,7 +5,9 @@ import userRoutes from "./routes/user";
 import uploadRoutes from "./routes/upload";
 import authRouter from "./routes/authRouter";
 import sequelize from "./models/index";
-
+import { RedisStore, redisClient } from "./config/redisConfig";
+import './config/passportConfig';
+import cookieParser from 'cookie-parser';
 // [설명] express 애플리케이션을 초기화합니다.
 const app: Express = express();
 
@@ -24,16 +26,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next(); // 다음 미들웨어로 진행합니다.
 });
 
-app.use(
-  session({
-    secret: "your_secret_key",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
 
 app.use(passport.initialize());
-app.use(passport.session());
+
 
 // [설명] 사용자 관련 라우트를 /users 경로에 연결합니다.
 app.use("/users", userRoutes);
@@ -42,7 +37,7 @@ app.use("/auth", authRouter);
 
 //[설명] Sequelize를 사용하여 모델과 데이터베이스를 동기화합니다.
 sequelize
-  .sync({ alter: false }) // force: true 옵션은 기존 테이블을 삭제하고 새로 만듭니다. 개발 중에만 사용하도록 주의하세요.
+  .sync({ alter: true }) // force: true 옵션은 기존 테이블을 삭제하고 새로 만듭니다. 개발 중에만 사용하도록 주의하세요.
   .then(() => {
     console.log(`Server is running on port ${PORT}`);
   })
