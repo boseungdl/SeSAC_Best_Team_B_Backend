@@ -10,6 +10,7 @@
       "rootDir": "./src",                    // 소스 파일이 위치한 디렉터리
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
+      "typeRoots": ["./types", "./node_modules/@types"]
     },
     "include": ["src/**/*.ts"],             // 컴파일할 TypeScript 파일 위치
     "exclude": ["node_modules"]             // 컴파일에서 제외할 파일 또는 폴더

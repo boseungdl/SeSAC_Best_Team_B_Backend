@@ -1,9 +1,8 @@
-// src/models/user.ts
+import { Model, Column, Table, DataType } from "sequelize-typescript";
 
-import { Model, Column, Table, DataType } from 'sequelize-typescript';
+@Table({ timestamps: true })
+class User extends Model {
 
-@Table
- class User extends Model {
   @Column({
     type: DataType.INTEGER.UNSIGNED,
     autoIncrement: true,
@@ -15,14 +14,16 @@ import { Model, Column, Table, DataType } from 'sequelize-typescript';
     type: DataType.STRING,
     allowNull: false,
   })
-  username!: string;
+  kakaoId!: string;
 
+  // Refresh Token 칼럼을 추가합니다. 
+  // 문자열 형태의 토큰 값이 저장됩니다.
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  password!: string;
+  refreshToken?: string;
 
-  // 필요한 다른 컬럼들을 추가할 수 있습니다.
 }
+
 export default User;
