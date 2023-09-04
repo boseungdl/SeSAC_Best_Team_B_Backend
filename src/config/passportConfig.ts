@@ -1,7 +1,6 @@
 import passport from "passport";
 import { Strategy as KakaoStrategy } from "passport-kakao";
 import User from "../models/tables/user";
-import axios from 'axios';
 
 // [5단계] 카카오 OAuth2.0 전략을 설정합니다.
 passport.use(
@@ -16,7 +15,7 @@ passport.use(
             console.log(profile)
             try {
                 // 사용자를 데이터베이스에서 찾거나 새로운 사용자를 생성
-                let user = await User.findOne({ where: { kakaoId: profile.id } });
+                let user = await User.findOne({ where: { kakaoId: profile.username } });
                 console.log(11)
                 console.log(user)
                 if (!user) {
@@ -30,7 +29,7 @@ passport.use(
                     await user.save();
                 }
                 // done 함수를 호출하여 req.user를 설정
-                done(null, user);
+                done(null, user.kakaoId);
             } catch (error) {
                 console.log(122222)
                 done(error);

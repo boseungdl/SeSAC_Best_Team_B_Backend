@@ -1,13 +1,16 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import session from "express-session";
 import passport from "passport";
-import userRoutes from "./routes/user";
+import cors from "cors";
+import userRoutes from "./routes/mainRoute";
 import uploadRoutes from "./routes/upload";
 import authRouter from "./routes/authRouter";
+import mainRoute from "./routes/mainRoute";
+
 import sequelize from "./models/index";
-import { RedisStore, redisClient } from "./config/redisConfig";
 import './config/passportConfig';
 import cookieParser from 'cookie-parser';
+
 // [설명] express 애플리케이션을 초기화합니다.
 const app: Express = express();
 
@@ -16,16 +19,22 @@ app.use(express.json());
 
 // [설명] CORS 관련 문제를 피하기 위해 모든 도메인에서의 요청을 허용합니다.
 //실제 프로덕션 환경에서는 특정 도메인만 허용하도록 설정해야 합니다.
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next(); // 다음 미들웨어로 진행합니다.
-});
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next(); // 다음 미들웨어로 진행합니다.
+// });
 
+app.use(cors({
+  origin: 'http://localhost:3000', // 여러분의 프론트엔드 도메인을 여기에 입력하세요
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}));
+app.use(cookieParser());
 
 app.use(passport.initialize());
 
@@ -34,6 +43,7 @@ app.use(passport.initialize());
 app.use("/users", userRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/auth", authRouter);
+app.use("/main", mainRoute);
 
 //[설명] Sequelize를 사용하여 모델과 데이터베이스를 동기화합니다.
 sequelize

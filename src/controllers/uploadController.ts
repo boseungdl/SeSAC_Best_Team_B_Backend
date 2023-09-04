@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).array("images");
 
 export const uploadImages = async (req: Request, res: Response) => {
+  
   upload(req, res, async (err) => {
     if (err) {
       return res.status(500).json({
@@ -43,12 +44,15 @@ export const uploadImages = async (req: Request, res: Response) => {
     })
 
     try {
+
       console.log(req.body.text)
+      console.log('req.user12121',typeof req.user)
       // 여기서 기록(Record)을 먼저 저장합니다.
       const record = await Record.create({
-        recordValue: req.body.text
+        recordValue: req.body.text,
+        kakaoId: req.user 
       });
-      console.log(record)
+      console.log('record', record)
       // 이제 이미지 데이터를 저장합니다.
       for (let file of filepaths) {
         const buffer = fs.readFileSync(file);
@@ -60,6 +64,7 @@ export const uploadImages = async (req: Request, res: Response) => {
           GPSLatitude: result.tags.GPSLatitude,
           CreateDate: new Date(result.tags.CreateDate*1000),
           recordId: record.recordId // 기록의 ID를 FK로 사용합니다.
+          
         });
       }
       console.log(1)
