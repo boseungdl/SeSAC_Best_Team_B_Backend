@@ -3,7 +3,6 @@ import Record from "./record";
 
 @Table({ timestamps: true })
 class User extends Model {
-
   @Column({
     type: DataType.INTEGER.UNSIGNED,
     autoIncrement: true,
@@ -14,10 +13,11 @@ class User extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    unique: true,
   })
   kakaoId!: string;
 
-  // Refresh Token 칼럼을 추가합니다. 
+  // Refresh Token 칼럼을 추가합니다.
   // 문자열 형태의 토큰 값이 저장됩니다.
   @Column({
     type: DataType.STRING,
@@ -26,7 +26,7 @@ class User extends Model {
   refreshToken?: string;
 
   @HasMany(() => Record)
-  record!: Record[];
+  records!: Record[];
 }
 
 export default User;

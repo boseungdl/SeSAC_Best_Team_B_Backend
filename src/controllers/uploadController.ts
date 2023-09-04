@@ -3,8 +3,9 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import exifParser from "exif-parser";
-import Image from "../models/tables/image";  // 모델 import 위치는 실제 경로에 따라 변경되어야 합니다.
-import Record from "../models/tables/record";  // 모델 import 위치는 실제 경로에 따라 변경되어야 합니다.
+import Image from "../models/tables/image";
+import Record from "../models/tables/record";
+import heicConvert from "heic-convert";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -18,7 +19,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).array("images");
 
 export const uploadImages = async (req: Request, res: Response) => {
-  
   upload(req, res, async (err) => {
     if (err) {
       return res.status(500).json({
@@ -28,54 +28,79 @@ export const uploadImages = async (req: Request, res: Response) => {
       });
     }
 
-    if (!req.files) {
+    if (!req.files || !Array.isArray(req.files)) {
       return res
         .status(400)
         .json({ success: false, message: "No files uploaded" });
     }
 
-    const filepaths = (req.files as Express.Multer.File[]).map((file) => {
-      const buffer = fs.readFileSync(file.path);
-      const parser = exifParser.create(buffer);
-      const result = parser.parse();
-
-      // console.log("result", result, "end"); // Exif data
-      return file.path;
-    })
-
+    if (!req.user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User information is missing" });
+    }
+    console.log(req.user);
+    console.log(req.body.text);
+    console.log(req.files);
     try {
-
-      console.log(req.body.text)
-      console.log('req.user12121',typeof req.user)
-      // 여기서 기록(Record)을 먼저 저장합니다.
       const record = await Record.create({
         recordValue: req.body.text,
-        kakaoId: req.user 
+        kakaoId: req.user,
       });
-      console.log('record', record)
-      // 이제 이미지 데이터를 저장합니다.
-      for (let file of filepaths) {
-        const buffer = fs.readFileSync(file);
-        const parser = exifParser.create(buffer);
-        const result = parser.parse();
-        console.log('result.tags.CreateDate', result.tags.CreateDate)
-        await Image.create({
-          GPSLongitude: result.tags.GPSLongitude,
-          GPSLatitude: result.tags.GPSLatitude,
-          CreateDate: new Date(result.tags.CreateDate*1000),
-          recordId: record.recordId // 기록의 ID를 FK로 사용합니다.
-          
-        });
-      }
-      console.log(1)
+
+      const filepaths = await Promise.all(
+        (req.files as Express.Multer.File[]).map(async (file) => {
+          try {
+            const buffer = fs.readFileSync(file.path);
+            const uint8Array = new Uint8Array(buffer);
+
+            let outputFilePath = file.path;
+
+            if (path.extname(file.originalname).toLowerCase() === ".heic") {
+              const outputBuffer = await heicConvert({
+                buffer: buffer,
+                format: "JPEG",
+              });
+              outputFilePath = file.path.replace(".heic", ".jpg");
+              fs.writeFileSync(outputFilePath, outputBuffer as any);
+            }
+
+            // EXIF 데이터 파싱을 HEIC 변환 후에 수행
+            const newBuffer = fs.readFileSync(outputFilePath);
+            const parser = exifParser.create(newBuffer);
+            const result = parser.parse();
+            console.log(result);
+            return {
+              path: outputFilePath,
+              GPSLongitude: result.tags.GPSLongitude,
+              GPSLatitude: result.tags.GPSLatitude,
+              CreateDate: new Date(result.tags.CreateDate * 1000),
+            };
+          } catch (error) {
+            console.error("File processing error:", error);
+            return null;
+          }
+        })
+      );
+
+      const imagesData = filepaths
+        .filter((file) => file !== null)
+        .map((file: any) => ({
+          GPSLongitude: file.GPSLongitude,
+          GPSLatitude: file.GPSLatitude,
+          CreateDate: file.CreateDate,
+          recordId: record.recordId,
+        }));
+      console.log("imagesData", imagesData);
+      await Image.bulkCreate(imagesData);
+
       res.status(200).json({
         success: true,
         message: "Uploaded and saved successfully",
         filepaths: filepaths,
       });
-
-    } catch (error : any ) {
-      console.log(2)
+    } catch (error: any) {
+      console.error("DB insert failed:", error);
       res.status(500).json({
         success: false,
         message: "DB insert failed",
