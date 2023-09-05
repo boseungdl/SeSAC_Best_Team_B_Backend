@@ -1,4 +1,5 @@
-import { Model, Column, Table, DataType } from "sequelize-typescript";
+import { Model, Column, Table, DataType, HasMany } from "sequelize-typescript";
+import Record from "./record";
 
 @Table({ timestamps: true })
 class User extends Model {
@@ -24,6 +25,8 @@ class User extends Model {
   })
   refreshToken?: string;
 
+  @HasMany(() => Record)
+  record!: Record[];
 }
 
 export default User;

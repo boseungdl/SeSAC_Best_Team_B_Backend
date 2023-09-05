@@ -1,7 +1,8 @@
 // src/models/record.ts
 
-import { Model, Column, Table, DataType, HasMany } from 'sequelize-typescript';
+import { Model, Column, Table, DataType, HasMany, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import Image from './image';
+import User from './user';
 
 @Table({timestamps: true})
 class Record extends Model {
@@ -20,6 +21,13 @@ class Record extends Model {
 
   @HasMany(() => Image)
   images!: Image[];
+
+  @ForeignKey(() => User)
+  @Column(DataType.STRING)
+  kakaoId!: string;
+  
+  @BelongsTo(() => User)
+  user!: User;
 }
 
 export default Record;
