@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+    cb(null, Date.now() + path.basename(file.originalname));
   },
 });
 
@@ -50,7 +50,7 @@ export const uploadImages = async (req: Request, res: Response) => {
 
             if (path.extname(file.originalname).toLowerCase() === ".heic") {
               let result = await exifr.parse(buffer); // HEIC 파일의 원본 버퍼에 대해 호출
-              console.log('Original HEIC Exif Data:', result.GPSDateStamp);
+              console.log('Original HEIC Exif Data:', result);
             
               return {
                 path: outputFilePath,
@@ -70,15 +70,29 @@ export const uploadImages = async (req: Request, res: Response) => {
               };
             }
 
-        
+      
           } catch (error) {
             console.error("File processing error:", error);
             throw error;
           }
         })
       );
-
-      const imagesData = filepaths.map((file) => ({
+      type FileUploadInfo = {
+        fieldname: string;
+        originalname: string;
+        encoding: string;
+        mimetype: string;
+        destination: string;
+        filename: string;
+        path: string;
+        size: number;
+      };
+      
+      type ReqFiles = FileUploadInfo[];
+      let img :ReqFiles= req.files
+      console.log('req.files', req.files)
+      const imagesData = filepaths.map((file, i) => ({
+        imageName: img[i].filename,
         GPSLongitude: file.GPSLongitude,
         GPSLatitude: file.GPSLatitude,
         CreateDate: file.CreateDate,

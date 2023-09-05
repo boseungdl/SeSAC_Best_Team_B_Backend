@@ -45,7 +45,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
             // 쿠키에 새 액세스 토큰 저장
             res.cookie('accessToken', newAccessToken, { httpOnly: true });
             
-            req.user = decodedRefreshToken;
+            req.user = decodedRefreshToken.userId;
           } catch (err) {
             if (err instanceof jwt.TokenExpiredError) {
               // 리프레시 토큰이 만료되었을 때 카카오 로그인 페이지로 리다이렉트

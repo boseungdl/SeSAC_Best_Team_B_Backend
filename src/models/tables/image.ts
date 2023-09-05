@@ -36,6 +36,12 @@ class Image extends Model {  // Image 클래스는 Sequelize의 Model 클래스�
     allowNull: false,
   })
   CreateDate!: Date;
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    unique:true
+  })
+  imageName!: string;
 
   
   @ForeignKey(() => Record)
