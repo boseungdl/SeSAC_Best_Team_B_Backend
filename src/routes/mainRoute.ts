@@ -5,4 +5,5 @@ const router = express.Router();  // Express 라우터 인스턴스 생성
 
 router.get('/', verifyToken, getdataController.getImageRecord);   // 모든 사용자 정보를 가져오는 요청을 처리
 
+
 export default router;
