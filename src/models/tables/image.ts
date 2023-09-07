@@ -42,13 +42,6 @@ class Image extends Model {
   })
   imageName!: string;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-    unique:true
-  })
-  imageName!: string;
-
   @ForeignKey(() => Record)
   @Column(DataType.INTEGER.UNSIGNED)
   recordId!: number;
