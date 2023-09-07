@@ -2,21 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
-// interface UserPayload {
-//   id: string;
-//   email: string;
-//   // 여기에 필요한 다른 필드를 추가할 수 있습니다.
-// }
-
-// declare global {
-//   namespace Express {
-//     interface Request {
-//       user?: UserPayload;
-//     }
-//   }
-// }
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+  console.log("req.cookies", req.cookies)
   const { accessToken, refreshToken } = req.cookies;
 
   if (!accessToken && !refreshToken) {
