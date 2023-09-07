@@ -19,9 +19,6 @@ export const getUserById = async (req: Request, res: Response) => {
     });
     console.log(userWithRecordsAndImages)
 
-
-    
-
     res.json(userWithRecordsAndImages);
   } catch (error) {
     console.error(error);
@@ -45,7 +42,7 @@ export const getRecordsWithImages = async (req: Request, res: Response) => {
     for (const record of records) {
       const images = await Image.findAll({
         where: { recordId: record.recordId },
-        attributes: ["id", "GPSLatitude", "GPSLongitude", "CreateDate"],
+        attributes: ["id", "imageName", "GPSLatitude", "GPSLongitude", "CreateDate"],
       });
 
       recordsWithImages.push({ record, images });
