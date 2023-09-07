@@ -35,6 +35,12 @@ class Image extends Model {
     allowNull: false,
   })
   CreateDate!: Date;
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    unique:true
+  })
+  imageName!: string;
 
   @Column({
     type: DataType.STRING,
