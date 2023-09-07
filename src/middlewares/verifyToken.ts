@@ -2,21 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
-// interface UserPayload {
-//   id: string;
-//   email: string;
-//   // 여기에 필요한 다른 필드를 추가할 수 있습니다.
-// }
-
-// declare global {
-//   namespace Express {
-//     interface Request {
-//       user?: UserPayload;
-//     }
-//   }
-// }
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+  console.log("req.cookies", req.cookies)
   const { accessToken, refreshToken } = req.cookies;
 
   if (!accessToken && !refreshToken) {
@@ -45,7 +33,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
             // 쿠키에 새 액세스 토큰 저장
             res.cookie('accessToken', newAccessToken, { httpOnly: true });
             
-            req.user = decodedRefreshToken;
+            req.user = decodedRefreshToken.userId;
           } catch (err) {
             if (err instanceof jwt.TokenExpiredError) {
               // 리프레시 토큰이 만료되었을 때 카카오 로그인 페이지로 리다이렉트
