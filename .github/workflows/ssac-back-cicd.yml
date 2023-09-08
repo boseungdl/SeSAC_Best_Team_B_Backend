@@ -1,5 +1,4 @@
-name: ssac-backend #test
-
+name: ssac-backend 
 on:  # bracnch main push 감지 시 실행
   push:
     branches: [ main ]
