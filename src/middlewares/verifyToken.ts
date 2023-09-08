@@ -49,7 +49,8 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
           } catch (err) {
             if (err instanceof jwt.TokenExpiredError) {
               // 리프레시 토큰이 만료되었을 때 카카오 로그인 페이지로 리다이렉트
-              return res.redirect('http://localhost:3000/login');
+              // return res.redirect('http://localhost:3000/login');
+              return res.redirect(process.env.FRONTEND_URL + '/login');
             }
             return res.status(401).send('Invalid refresh token');
           }
@@ -75,7 +76,8 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     } catch (err) {
       if (err instanceof jwt.TokenExpiredError) {
         // 리프레시 토큰이 만료되었을 때 카카오 로그인 페이지로 리다이렉트
-        return res.redirect('http://localhost:3000/login');
+        // return res.redirect('http://localhost:3000/login');
+        return res.redirect(process.env.FRONTEND_URL + '/login');
       }
       return res.status(401).send('Invalid refresh token');
     }

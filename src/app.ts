@@ -30,7 +30,8 @@ app.use(express.json());
 // });
 
 app.use(cors({
-  origin: 'http://localhost:3000', // 여러분의 프론트엔드 도메인을 여기에 입력하세요
+  // origin: 'http://localhost:3000', // 여러분의 프론트엔드 도메인을 여기에 입력하세요
+  origin: process.env.FRONTEND_URL, // 여러분의 프론트엔드 도메인을 여기에 입력하세요
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
