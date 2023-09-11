@@ -40,10 +40,10 @@ class Room extends Model {
   relationship!: string; // 관계 유형
 
   @Column({
-    type: DataType.ENUM("남", "여", "단체"),
+    type: DataType.STRING(10),
     allowNull: false,
   })
-  genderGroup!: string; // 성별 그룹
+  genderOrGroup!: string; // 성별 그룹
 
   @Column({
     type: DataType.STRING(15),
@@ -53,10 +53,14 @@ class Room extends Model {
 
   @ForeignKey(() => User)
   @Column({
-    type: DataType.INTEGER.UNSIGNED,
+    type: DataType.STRING,
     allowNull: false,
+    references: {
+      model: User, // 참조하는 테이블
+      key: "kakaoId", // 참조하는 테이블의 필드
+    },
   })
-  userId!: number; // User 모델과의 관계 설정
+  kakaoId!: string; // User 테이블의 kakaoId를 외래 키로 참조합니다.
 
   @BelongsTo(() => User)
   user!: User;

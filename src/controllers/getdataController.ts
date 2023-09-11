@@ -59,31 +59,32 @@ export const getRecordsWithImages = async (req: Request, res: Response) => {
 };
 export const getUserAndRoomData = async (req: Request, res: Response) => {
   try {
-    const userId = req.params.userId;
+    console.log("getUserAndRoomData 스타트!")
+    const userId = req.user;
 
-    const user = await User.findOne({
-      where: { id: userId },
-      attributes: ["userId"],
-      include: [
-        {
-          model: Room,
-          attributes: [
-            "roomId",
-            "name",
-            "relationship",
-            "genderGroup",
-            "slogan",
-          ],
-        },
+
+
+    
+    const user = await Room.findAll({
+      where: { kakaoId: userId },
+      // attributes: ["kakaoid"],
+      attributes: [
+        "roomId",
+        "name",
+        "relationship",
+        "genderOrGroup",
+        "slogan",
       ],
     });
-
+    
+    console.log(user)
     if (!user) {
       return res.status(404).send({ error: "User not found" });
     }
 
     res.send(user);
   } catch (error) {
+    console.log(error)
     res.status(500).send({ error: "Server error" });
   }
 };

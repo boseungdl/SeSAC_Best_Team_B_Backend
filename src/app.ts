@@ -49,11 +49,9 @@ app.use("/main", mainRoute);
 
 //[설명] Sequelize를 사용하여 모델과 데이터베이스를 동기화합니다.
 sequelize
-  .sync({ force: true }) // force: true 옵션은 기존 테이블을 삭제하고 새로 만듭니다. 개발 중에만 사용하도록 주의하세요.
+  .sync({ force: false }) // force: true 옵션은 기존 테이블을 삭제하고 새로 만듭니다. 개발 중에만 사용하도록 주의하세요.
   .then(() => {
-    console.log(`|*********************************|`);
-    console.log(`|Server is running on port ${PORT}   |`);
-    console.log(`|*********************************|`);
+    console.log("db접속 성공")
   })
   .catch((err: Error) => {
     console.error("Unable to sync with the database:", err);
@@ -62,5 +60,7 @@ sequelize
 // [설명] 서버를 시작하는 코드입니다. 3000 포트에서 리스닝합니다.
 const PORT: number = 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`|*********************************|`);
+  console.log(`|Server is running on port ${PORT}   |`);
+  console.log(`|*********************************|`);
 });

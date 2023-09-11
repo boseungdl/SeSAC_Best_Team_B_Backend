@@ -5,18 +5,19 @@ import Room from "../models/tables/room";
 export const createRoom = async (req: Request, res: Response) => {
   console.log(req.body);
   try {
-    const { name, relationship, genderGroup, slogan, userId } = req.body;
+    const { name, relationship, genderOrGroup, slogan, userId } = req.body;
 
     const newRoom = await Room.create({
       name,
       relationship,
-      genderGroup,
+      genderOrGroup,
       slogan,
-      userId: req.user,
+      kakaoId: req.user,
     });
-
+    console.log(newRoom)
     res.status(201).send(newRoom);
   } catch (error) {
+    console.log(error)
     res.status(500).send({ error: "Server error" });
   }
 };
