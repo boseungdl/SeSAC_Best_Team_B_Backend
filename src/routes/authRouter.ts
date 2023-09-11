@@ -48,8 +48,8 @@ router.get(
       maxAge: 1 * 60 * 1000, // 10분
     });
 
-    // res.redirect("http://localhost:3000");
-    res.redirect(process.env.FRONTEND_URL as string);
+    res.redirect("http://localhost:3000");
+    // res.redirect(process.env.FRONTEND_URL as string);
   }
 );
 

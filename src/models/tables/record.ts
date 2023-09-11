@@ -11,6 +11,7 @@ import {
 } from "sequelize-typescript";
 import Image from "./image";
 import User from "./user";
+import Room from "./room";
 
 @Table({ timestamps: true })
 class Record extends Model {
@@ -43,6 +44,16 @@ class Record extends Model {
 
   @BelongsTo(() => User)
   user!: User;
+
+  @ForeignKey(() => Room)
+  @Column({
+    type: DataType.INTEGER.UNSIGNED,
+    allowNull: false,
+  })
+  roomId!: number;
+
+  @BelongsTo(() => Room)
+  room!: Room;
 }
 
 export default Record;

@@ -1,5 +1,6 @@
 import { Model, Column, Table, DataType, HasMany } from "sequelize-typescript";
 import Record from "./record";
+import Room from "./room";
 
 @Table({ timestamps: true })
 class User extends Model {
@@ -27,6 +28,9 @@ class User extends Model {
 
   @HasMany(() => Record)
   records!: Record[];
+
+  @HasMany(() => Room)
+  rooms!: Room[];
 }
 
 export default User;
