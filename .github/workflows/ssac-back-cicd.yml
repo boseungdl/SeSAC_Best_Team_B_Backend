@@ -71,7 +71,7 @@ jobs:
 
         KAKAO_ID: ${{ secrets.KAKAO_ID }}
         ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-        REFRESH_TOKEN_SECRET: ${{ REFRESH_TOKEN_SECRET}}
+        REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET}}
         
         AWS_REGION: ${{ secrets.AWS_REGION}}      
         AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
