@@ -68,6 +68,7 @@ export const uploadImages = async (req: Request, res: Response) => {
         const record = await Record.create({
           recordValue: req.body.text,
           kakaoId: req.user,
+          roomId: req.body.roomId,
         });
 
         const metaData = await Promise.all(

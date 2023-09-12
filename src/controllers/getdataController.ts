@@ -8,16 +8,37 @@ export const getImageRecord = async (req: Request, res: Response) => {
   try {
     const userId = req.user; // 라우터 설정에 따라 'id'를 조정할 수 있습니다.
     console.log("getdata req.user", userId);
+    console.log('req.params', req.params)
 
     const userData = await Record.findAll({
-      where: { kakaoId: userId },
+      where: { kakaoId: userId, roomId: req.params.roomId },
+      attributes: ["recordId", "recordValue"],
       include: [
         {
           model: Image,
+          attributes: [
+            "id",
+            "imageName",
+            "GPSLatitude",
+            "GPSLongitude",
+            "CreateDate",
+          ],
         },
       ],
     });
-    res.json(userData);
+
+   const data = userData.map((a) => {
+      return {
+        record: {
+          recordId: a.recordId,
+          recordValue: a.recordValue,
+        },
+        images:a.images
+      }
+    })
+    console.log(data)
+    res.json(data
+);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

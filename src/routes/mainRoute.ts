@@ -3,7 +3,7 @@ import * as getdataController from "../controllers/getdataController"; // userCo
 import { verifyToken } from "../middlewares/verifyToken";
 const router = express.Router(); // Express 라우터 인스턴스 생성
 
-router.get("/", verifyToken, getdataController.getRecordsWithImages);
 router.get("/room", verifyToken, getdataController.getUserAndRoomData);
+router.get("/:roomId", verifyToken, getdataController.getImageRecord);
 
 export default router;
