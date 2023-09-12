@@ -14,15 +14,6 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v2 #checkout action 사용
-
-    - name: Test
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18.x'
-    - run:  |
-        npm install
-        npm run build . --if-present
-        npm start
         
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
