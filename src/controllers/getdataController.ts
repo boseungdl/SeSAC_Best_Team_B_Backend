@@ -8,7 +8,7 @@ export const getImageRecord = async (req: Request, res: Response) => {
   try {
     const userId = req.user; // 라우터 설정에 따라 'id'를 조정할 수 있습니다.
     console.log("getdata req.user", userId);
-    console.log('req.params', req.params)
+    console.log("req.params", req.params);
 
     const userData = await Record.findAll({
       where: { kakaoId: userId, roomId: req.params.roomId },
@@ -27,18 +27,25 @@ export const getImageRecord = async (req: Request, res: Response) => {
       ],
     });
 
-   const data = userData.map((a) => {
+    //     const userdata1 = userData.sort((a, b) => {
+    //       return (
+    //         new Date(a.images[0].CreateDate).getTime() -
+    //         new Date(b.images[0].CreateDate).getTime()
+    //       );
+    //     });
+    // console.log('userData', userData)
+    // console.log('userdata1', userdata1)
+    const data = userData.map((a) => {
       return {
         record: {
           recordId: a.recordId,
           recordValue: a.recordValue,
         },
-        images:a.images
-      }
-    })
-    console.log(data)
-    res.json(data
-);
+        images: a.images,
+      };
+    });
+    console.log(data);
+    res.json(data);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -80,32 +87,23 @@ export const getRecordsWithImages = async (req: Request, res: Response) => {
 };
 export const getUserAndRoomData = async (req: Request, res: Response) => {
   try {
-    console.log("getUserAndRoomData 스타트!")
+    console.log("getUserAndRoomData 스타트!");
     const userId = req.user;
 
-
-
-    
     const user = await Room.findAll({
       where: { kakaoId: userId },
       // attributes: ["kakaoid"],
-      attributes: [
-        "roomId",
-        "name",
-        "relationship",
-        "genderOrGroup",
-        "slogan",
-      ],
+      attributes: ["roomId", "name", "relationship", "genderOrGroup", "slogan"],
     });
-    
-    console.log(user)
+
+    console.log(user);
     if (!user) {
       return res.status(404).send({ error: "User not found" });
     }
 
     res.send(user);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).send({ error: "Server error" });
   }
 };

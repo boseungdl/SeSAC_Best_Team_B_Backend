@@ -51,7 +51,7 @@ app.use("/main", mainRoute);
 sequelize
   .sync({ force: false }) // force: true 옵션은 기존 테이블을 삭제하고 새로 만듭니다. 개발 중에만 사용하도록 주의하세요.
   .then(() => {
-    console.log("db접속 성공")
+    console.log("db접속 성공");
   })
   .catch((err: Error) => {
     console.error("Unable to sync with the database:", err);
