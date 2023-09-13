@@ -8,8 +8,8 @@ import authRouter from "./routes/authRouter";
 import mainRoute from "./routes/mainRoute";
 
 import sequelize from "./models/index";
-import './config/passportConfig';
-import cookieParser from 'cookie-parser';
+import "./config/passportConfig";
+import cookieParser from "cookie-parser";
 
 // [설명] express 애플리케이션을 초기화합니다.
 const app: Express = express();
@@ -29,16 +29,17 @@ app.use(express.json());
 //   next(); // 다음 미들웨어로 진행합니다.
 // });
 
-app.use(cors({
-  // origin: 'http://localhost:3000', // 여러분의 프론트엔드 도메인을 여기에 입력하세요
-  origin: process.env.FRONTEND_URL, // 여러분의 프론트엔드 도메인을 여기에 입력하세요
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-}));
+app.use(
+  cors({
+    // origin: 'http://localhost:3000', // 여러분의 프론트엔드 도메인을 여기에 입력하세요
+    origin: process.env.FRONTEND_URL, // 여러분의 프론트엔드 도메인을 여기에 입력하세요
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 app.use(passport.initialize());
-
 
 // [설명] 사용자 관련 라우트를 /users 경로에 연결합니다.
 app.use("/users", userRoutes);
@@ -48,9 +49,9 @@ app.use("/main", mainRoute);
 
 //[설명] Sequelize를 사용하여 모델과 데이터베이스를 동기화합니다.
 sequelize
-  .sync({ alter: true }) // force: true 옵션은 기존 테이블을 삭제하고 새로 만듭니다. 개발 중에만 사용하도록 주의하세요.
+  .sync({ force: false }) // force: true 옵션은 기존 테이블을 삭제하고 새로 만듭니다. 개발 중에만 사용하도록 주의하세요.
   .then(() => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log("db접속 성공");
   })
   .catch((err: Error) => {
     console.error("Unable to sync with the database:", err);
@@ -59,5 +60,7 @@ sequelize
 // [설명] 서버를 시작하는 코드입니다. 3000 포트에서 리스닝합니다.
 const PORT: number = 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`|*********************************|`);
+  console.log(`|Server is running on port ${PORT}   |`);
+  console.log(`|*********************************|`);
 });

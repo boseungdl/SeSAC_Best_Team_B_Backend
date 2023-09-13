@@ -1,5 +1,4 @@
-// src/models/record.ts
-
+// src/models/tables/room.ts
 import {
   Model,
   Column,
@@ -9,27 +8,48 @@ import {
   ForeignKey,
   BelongsTo,
 } from "sequelize-typescript";
-import Image from "./image";
 import User from "./user";
-import Room from "./room";
+import Record from "./record";
 
 @Table({ timestamps: true })
-class Record extends Model {
+class Room extends Model {
   @Column({
     type: DataType.INTEGER.UNSIGNED,
     autoIncrement: true,
     primaryKey: true,
   })
-  recordId!: number;
+  roomId!: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  recordValue!: string;
+  name!: string; // 방 이름 또는 그룹명
 
-  @HasMany(() => Image)
-  images!: Image[];
+  @Column({
+    type: DataType.ENUM(
+      "친구",
+      "가족",
+      "여자친구",
+      "남자친구",
+      "애완동물",
+      "기타"
+    ),
+    allowNull: false,
+  })
+  relationship!: string; // 관계 유형
+
+  @Column({
+    type: DataType.STRING(10),
+    allowNull: false,
+  })
+  genderOrGroup!: string; // 성별 그룹
+
+  @Column({
+    type: DataType.STRING(15),
+    allowNull: true,
+  })
+  slogan!: string; // 슬로건 (15자 이내)
 
   @ForeignKey(() => User)
   @Column({
@@ -45,15 +65,8 @@ class Record extends Model {
   @BelongsTo(() => User)
   user!: User;
 
-  @ForeignKey(() => Room)
-  @Column({
-    type: DataType.INTEGER.UNSIGNED,
-    allowNull: false,
-  })
-  roomId!: number;
-
-  @BelongsTo(() => Room)
-  room!: Room;
+  @HasMany(() => Record)
+  records!: Record[];
 }
 
-export default Record;
+export default Room;
