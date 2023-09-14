@@ -24,7 +24,7 @@ const s3_storage = multerS3({
   key: function (req, file, cb) {
     const ext = file.mimetype.split("/")[1];
     console.log(ext);
-    if (!["jpg", "jpeg", "heic", "png"].includes(ext)) {
+    if (!["jpg", "jpeg", "heic"].includes(ext)) {
       return cb(new Error("only jpg and heic are allowed"), "");
     }
     cb(null, Date.now() + "-" + path.basename(file.originalname));
@@ -138,15 +138,6 @@ export const uploadImages = async (req: Request, res: Response) => {
         );
 
         // console.log("req.files", req.files);
-        const imagesData1 = metaData.map((file, i) => ({
-          imageName: file.fileName,
-          GPSLongitude: file.GPSLongitude,
-          GPSLatitude: file.GPSLatitude,
-          CreateDate: file.CreateDate,
-          recordId: record.recordId,
-        }));
-        console.log("imagesData1", imagesData1);
-
         const imagesData = metaData
           .map((file, i) => ({
             imageName: file.fileName,
@@ -160,7 +151,7 @@ export const uploadImages = async (req: Request, res: Response) => {
             const dateB = new Date(b.CreateDate || 0).getTime();
             return dateA - dateB;
           });
-        console.log("imagesData", imagesData);
+    
 
         await Image.bulkCreate(imagesData);
 
