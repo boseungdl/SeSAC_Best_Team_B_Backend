@@ -71,15 +71,15 @@ jobs:
 
         FRONTEND_URL: ${{ secrets.FRONTEND_URL}}    
         BACKEND_URL: ${{ secrets.BACKEND_URL }}   
-
+    
+    - name: Build, tag, and push image to Amazon ECR 
+      env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ssac-back # !!!!!!!본인의 ecr로 변경 필요!!!!!!!!
-    
-        
-    - name: Build, tag, and push image to Amazon ECR 
+        IMAGE_TAG: ${{ steps.tag_version.outputs.new_tag }}
       run: | # 도커 파일 빌드 후 푸쉬
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.tag_version.outputs.new_tag }} .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.tag_version.outputs.new_tag }}
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
       
     - name: Checkout for Kustomize repository
       uses: actions/checkout@v2
