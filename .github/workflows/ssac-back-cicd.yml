@@ -36,42 +36,25 @@ jobs:
     - name: Generate Environment Variables File 
       run: |
         #DB 
-        echo "DB_USERNAME=$DB_USERNAME" >> .env
-        echo "DB_PASSWORD=$DB_PASSWORD" >> .env
-        echo "DB_NAME=$DB_NAME" >> .env
-        echo "DB_HOST=$DB_HOST" >> .env
-        echo "DB_DIALECT=$DB_DIALECT" >> .env
+        echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+        echo "DB_HOST=${{ secrets.DB_HOST}}" >> $GITHUB_ENV
+        echo "DB_DIALECT=${{ secrets.DB_DIALECT }}" >> $GITHUB_ENV
 
         #kakao 
-        echo "KAKAO_ID=$KAKAO_ID" >> .env
-        echo "ACCESS_TOKEN_SECRETT=$ACCESS_TOKEN_SECRET" >> .env
-        echo "REFRESH_TOKEN_SECRET=$REFRESH_TOKEN_SECRET" >> .env
+        echo "KAKAO_ID=${{ secrets.KAKAO_ID }}" >> $GITHUB_ENV
+        echo "ACCESS_TOKEN_SECRETT=${{ secrets.ACCESS_TOKEN_SECRET }}" >> $GITHUB_ENV
+        echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET}}" >> $GITHUB_ENV
 
         #aws 
-        echo "AWS_REGION=$AWS_REGION" >> .env
-        echo "AWS_S3_BUCKET_NAME=$AWS_S3_BUCKET_NAME" >> .env
+        echo "AWS_REGION${{ secrets.AWS_REGION}}" >> $GITHUB_ENV
+        echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> $GITHUB_ENV
 
         #front,back 
-        echo "FRONTEND_URL=$FRONTEND_URL" >> .env
-        echo "BACKEND_URL=$BACKEND_URL" >> .env
+        echo "FRONTEND_URL=${{ secrets.FRONTEND_URL}}" >> $GITHUB_ENV
+        echo "BACKEND_URL=${{ secrets.BACKEND_URL }}" >> $GITHUB_ENV
         
-      env:
-        DB_USERNAME: ${{ secrets.DB_USERNAME }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        DB_HOST: ${{ secrets.DB_HOST}}
-        DB_DIALECT: ${{ secrets.DB_DIALECT }}
-
-        KAKAO_ID: ${{ secrets.KAKAO_ID }}
-        ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-        REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET}}
-        
-        AWS_REGION: ${{ secrets.AWS_REGION}}      
-        AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
-
-        FRONTEND_URL: ${{ secrets.FRONTEND_URL}}    
-        BACKEND_URL: ${{ secrets.BACKEND_URL }}   
-    
     - name: Build, tag, and push image to Amazon ECR 
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
