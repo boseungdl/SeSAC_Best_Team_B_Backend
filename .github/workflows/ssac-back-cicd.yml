@@ -48,7 +48,7 @@ jobs:
         echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET}}" >> $GITHUB_ENV
 
         #aws 
-        echo "AWS_REGION${{ secrets.AWS_REGION}}" >> $GITHUB_ENV
+        echo "AWS_REGION=${{ secrets.AWS_REGION}}" >> $GITHUB_ENV
         echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> $GITHUB_ENV
 
         #front,back 
