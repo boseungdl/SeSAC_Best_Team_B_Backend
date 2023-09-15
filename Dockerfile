@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 # 와일드카드를 사용
 COPY package*.json ./
 RUN npm install
+RUN npm install dotenv
 # 앱 소스 추가
 COPY . .
 EXPOSE 3000
