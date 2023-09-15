@@ -43,6 +43,7 @@ jobs:
         IMAGE_TAG: ${{ steps.tag_version.outputs.new_tag }}
       run: | # 도커 파일 빌드 후 푸쉬
         echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+        cat .env
         echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
         echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
         echo "DB_HOST=${{ secrets.DB_HOST}}" >> .env
