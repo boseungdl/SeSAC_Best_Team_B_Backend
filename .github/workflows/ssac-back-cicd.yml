@@ -1,8 +1,9 @@
 name: ssac-back #
 
-on:  # bracnch main push 감지 시 실행
-  push:
-    branches: [ main ]
+on:
+  pull_request_target:
+    branches:
+      - main
 
 jobs:
   ci:   
