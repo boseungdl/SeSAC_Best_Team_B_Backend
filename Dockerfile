@@ -1,12 +1,30 @@
-FROM node:18-slim
-# 앱 디렉터리 생성
+# 먼저 의존성 패키지를 복사하고 설치
+FROM node:18-buster-slim AS dependencies
 WORKDIR /usr/src/app
-# 앱 의존성 설치
-# 가능한 경우(npm@5+) package.json과 package-lock.json을 모두 복사하기 위해
-# 와일드카드를 사용
 COPY package*.json ./
 RUN npm install
-# 앱 소스 추가
+RUN npm install --save-dev @babel/plugin-proposal-private-property-in-object
+
+# 애플리케이션 소스 코드를 복사
+FROM dependencies AS build
+WORKDIR /usr/src/app
 COPY . .
+COPY ./webpackDevServer.config.js  /usr/src/app/node_modules/react-scripts/config/webpackDevServer.config.js 
+RUN npm run build
+
+FROM build AS start
+COPY --from=build /usr/src/app/build /usr/src/app
 EXPOSE 3000
 CMD [ "npm", "start" ]
+
+
+
+
+
+
+
+
+
+
+
+
