@@ -12,19 +12,8 @@ COPY . .
 COPY ./webpackDevServer.config.js  /usr/src/app/node_modules/react-scripts/config/webpackDevServer.config.js 
 RUN npm run build
 
-FROM build AS start
-COPY --from=build /usr/src/app/build /usr/src/app
-EXPOSE 3000
-CMD [ "npm", "start" ]
-
-
-
-
-
-
-
-
-
-
-
-
+# 최종 이미지 생성
+FROM nginx:alpine
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
