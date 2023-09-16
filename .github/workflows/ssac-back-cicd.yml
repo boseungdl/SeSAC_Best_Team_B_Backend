@@ -1,7 +1,7 @@
 name: ssac-back #123
 
 on:
-  push:
+  pull_request_target:
     branches:
       - main
 
