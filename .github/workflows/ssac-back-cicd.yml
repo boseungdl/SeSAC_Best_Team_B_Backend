@@ -1,4 +1,4 @@
-name: ssac-back #123
+name: ssac-back
 
 on:
   pull_request_target:
