@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  ci:   
+  cicd:   
     name: Build Image
     runs-on: ubuntu-latest # ubuntu에서 실행
 
